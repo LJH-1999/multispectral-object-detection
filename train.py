@@ -919,7 +919,7 @@ if __name__ == '__main__':
     parser.add_argument('--cfg', type=str, default='./models/transformer/yolov5l_fusion_transformerx3_FLIR_aligned.yaml', help='model.yaml path')
     parser.add_argument('--data', type=str, default='./data/multispectral/LLVIP.yaml', help='data.yaml path')
     parser.add_argument('--hyp', type=str, default='data/hyp.finetune.yaml', help='hyperparameters path')
-    parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--batch-size', type=int, default=64, help='total batch size for all GPUs')
     parser.add_argument('--img-size', nargs='+', type=int, default=[640, 640], help='[train, test] image sizes')
     parser.add_argument('--rect', action='store_true', help='rectangular training')
