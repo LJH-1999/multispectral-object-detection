@@ -263,6 +263,10 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
             channel, re = args[0], args[1]
             channel = make_divisible(channel * gw, 8) if channel != no else channel
             args = [channel, re]  #只是把 channel*通道因子，reduction还是默认   [-1, 1, SELayer, [channel, reduction]]
+        elif m is NONLocalBlock2D:
+            in_channel = args[0]
+            in_channel = make_divisible(in_channel * gw, 8) if in_channel != no else in_channel
+            args = [in_channel]
         else:
             c2 = ch[f]
 
