@@ -14,7 +14,7 @@ backbone:
   # [from, number, module, args]
   # Two Stream
   [
-    ######### TransformerBlock One #############
+
     # stream one
     [-1, 1, Focus, [64, 3]],    # 0-P1/2
     [-1, 1, Conv, [128, 3, 2]], # 1-P2/4
@@ -29,14 +29,14 @@ backbone:
     [-1, 9, C3, [256]],   # 9-P3/8
 
     
-    ######### TransformerBlock Two #############
+    ######### TransformerBlock one #############
    # transformer fusion
     [[4,9], 1, GPT, [256]],   # 10-P3/8
     [[4,10], 1, Add2, [256,0]],    # 11-P3/8 stream one x+trans[0]
     [[9,10], 1, Add2, [256,1]],    # 12-P3/8 stream two x+trans[1]
 
 
-   ######### TransformerBlock Three #############
+   ######### TransformerBlock Two #############
    # stream one
     [11, 1, Conv, [512, 3, 2]],   # 13-P4/16
     [-1, 9, C3, [512]],   # 14-P4/16
@@ -44,12 +44,12 @@ backbone:
     [12, 1, Conv, [512, 3, 2]],   # 15-P4/16
     [-1, 9, C3, [512]],   # 16-P4/16
    # transformer fusion
-    [[14,16], 1, GPT, [512]],   # 17-P3/8
-    [[14,17], 1, Add2, [512,0]],    # 18-P3/8 stream one x+trans[0]
-    [[16,17], 1, Add2, [512,1]],    # 19-P3/8 stream two x+trans[1]
+    [[14,16], 1, GPT, [512]],   # 17-P3/16
+    [[14,17], 1, Add2, [512,0]],    # 18-P3/16 stream one x+trans[0]
+    [[16,17], 1, Add2, [512,1]],    # 19-P3/16 stream two x+trans[1]
 
 
-    ######### TransformerBlock Four #############
+    ######### TransformerBlock Three #############
     # stream one
     [18, 1, Conv, [1024, 3, 2]],    # 20-P5/32
     [-1, 1, SPP, [1024, [5, 9, 13]]],   # 21-P5/32
@@ -65,9 +65,9 @@ backbone:
 
 
     ######### Add Block #############
-    [[11,12], 1, Add, [1]],   # 29-P3/8 fusion backbone P3
-    [[18,19], 1, Add, [1]],   # 30-P4/16 fusion backbone P4
-    [[27,28], 1, Add, [1]],   # 31-P5/32 fusion backbone P5
+    [[11,12], 1, Add, [1]],   # 29-P3/8 fusion backbone P3   80x80x256
+    [[18,19], 1, Add, [1]],   # 30-P4/16 fusion backbone P4  40x40x512
+    [[27,28], 1, Add, [1]],   # 31-P5/32 fusion backbone P5  20x20x1024
 
   ]
 
@@ -75,23 +75,23 @@ backbone:
 # YOLOv5 head
 head:
   [
-    [-1, 1, Conv, [512, 1, 1]],   # 32
-    [-1, 1, nn.Upsample, [None, 2, 'nearest']],   # 33
+    [-1, 1, Conv, [512, 1, 1]],   # 32                    20x20x512
+    [-1, 1, nn.Upsample, [None, 2, 'nearest']],   # 33    40x40x512
     [[-1,30], 1, Concat, [1]],    # 34 cat backbone P4
-    [-1, 3, C3, [512, False]],    # 35
+    [-1, 3, C3, [512, False]],    # 35                     40x40x512
 
-    [-1, 1, Conv, [256, 1, 1]],   # 36
-    [-1, 1, nn.Upsample, [None, 2, 'nearest']],   # 37
+    [-1, 1, Conv, [256, 1, 1]],   # 36                     40x40x256
+    [-1, 1, nn.Upsample, [None, 2, 'nearest']],   # 37     80x80x256
     [[-1,29], 1, Concat, [1]],    # 38 cat backbone P3
-    [-1, 3, C3, [256, False]],    # 39 (P3/8-small)
+    [-1, 3, C3, [256, False]],    # 39 (P3/8-small)        80x80x256
 
-    [-1, 1, Conv, [256, 3, 2]],   # 40
+    [-1, 1, Conv, [256, 3, 2]],   # 40                     40x40x256
     [[-1,36], 1, Concat, [1]],    # 41 cat head P4
-    [-1, 3, C3, [512, False]],    # 42 (P4/16-medium)
+    [-1, 3, C3, [512, False]],    # 42 (P4/16-medium)      40x40x512
 
-    [-1, 1, Conv, [512, 3, 2]],    # 43
+    [-1, 1, Conv, [512, 3, 2]],    # 43                    20x20x512
     [[-1,32], 1, Concat, [1]],     # 44 cat head P5
-    [-1, 3, C3, [1024, False]],     # 45 (P5/32-large)
+    [-1, 3, C3, [1024, False]],    # 45 (P5/32-large)      20x20x1024
 
     [[39, 42, 45], 1, Detect, [nc, anchors]],   # Detect(P3, P4, P5)
   ]

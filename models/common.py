@@ -128,7 +128,7 @@ class BottleneckCSP(nn.Module):
         return self.cv4(self.act(self.bn(torch.cat((y1, y2), dim=1))))
 
 
-class C3(nn.Module):
+class C3(nn.Module): # C3 module 就是把进来的向量分成两份，然后分别经过两个卷积层，最后拼接起来
     # CSP Bottleneck with 3 convolutions
     def __init__(self, c1, c2, n=1, shortcut=True, g=1, e=0.5):  # ch_in, ch_out, number, shortcut, groups, expansion
         super(C3, self).__init__()
