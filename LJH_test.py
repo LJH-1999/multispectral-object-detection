@@ -196,7 +196,7 @@ class CrossViT(nn.Module):
 x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
 
 # 创建CrossViT类的实例
-model = CrossViT(dim=384, n_layer=8, num_heads=8, mlp_ratio=4,
+model = CrossViT(dim=1024, n_layer=8, num_heads=8, mlp_ratio=4,
                      qkv_bias=False, qk_scale=None, vert_anchors=8, horz_anchors=8,
                      drop=0, embd_pdrop=0.1, attn_drop=0, drop_path=0, act_layer=nn.GELU, norm_layer=nn.LayerNorm,
                      has_mlp=True)
