@@ -7,12 +7,14 @@
 import torch
 import torch.nn as nn
 x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
+print(x.shape)
 def forward(self, x):
     """
     Args:
         x (tuple?)
 
     """
+    print(x.shape)
     rgb_fea = x[0]  # rgb_fea (tensor): dim:(B, C, H, W)
     ir_fea = x[1]  # ir_fea (tensor): dim:(B, C, H, W)
     assert rgb_fea.shape[0] == ir_fea.shape[0]
