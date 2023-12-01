@@ -61,8 +61,8 @@ backbone:
     # transformer fusion
 #    [[22,25], 1, GPT, [1024]],    # 26-P5/32
     [[22,25], 1, CrossViT, [1024]],    # 26-P5/32
-    [[22,26], 1, Add2, [1024,0]],    # 27-P5/32 stream one x+trans[0]
-    [[25,26], 1, Add2, [1024,1]],    # 28-P5/32 stream two x+trans[1]
+    [[22,26], 1, Add, [1]],    # 27-P5/32 stream one x+trans[0]
+    [[25,26], 1, Add, [1]],    # 28-P5/32 stream two x+trans[1]
 
 
     ######### Add Block #############
