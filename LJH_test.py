@@ -174,6 +174,7 @@ class CrossViT(nn.Module):
                                                     1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
         print(x.shape)
+        print(ir_fea_flat.shape)
 
         for i in range(7):
             x = torch.cat([self.fusion[i](x), ir_fea_flat], dim=2)
