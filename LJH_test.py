@@ -49,4 +49,5 @@ def forward(self, x):
     # Interpolate (or Upsample)
     # -------------------------------------------------------------------------
     rgb_fea_out = F.interpolate(x, size=([h, w]), mode='bilinear')
+    print(rgb_fea_out.shape)
     return rgb_fea_out
