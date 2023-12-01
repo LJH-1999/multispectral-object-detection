@@ -249,6 +249,9 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
         elif m is GPT:
             c2 = ch[f[0]]
             args = [c2]
+        elif m is CrossViT:
+            c2 = ch[f[0]]
+            args = [c2]
         elif m is Concat:
             c2 = sum([ch[x] for x in f])
         elif m is Detect:
@@ -285,7 +288,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--cfg', type=str, default='yolov5s.yaml', help='model.yaml')
+    parser.add_argument('--cfg', type=str, default='yolov5l_fusion_transformerx3_llvip.yaml', help='model.yaml')
     parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     opt = parser.parse_args()
     opt.cfg = check_file(opt.cfg)  # check file
