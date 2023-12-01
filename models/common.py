@@ -17,8 +17,7 @@ from utils.datasets import letterbox
 from utils.general import non_max_suppression, make_divisible, scale_coords, increment_path, xyxy2xywh, save_one_box
 from utils.plots import colors, plot_one_box
 from utils.torch_utils import time_synchronized
-from timm.models.layers import DropPath, to_2tuple, trunc_normal
-from timm.models.vision_transformer import _cfg, Mlp, Block
+from timm.models.vision_transformer import Mlp
 
 from torch.nn import init, Sequential
 
