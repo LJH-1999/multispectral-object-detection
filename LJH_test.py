@@ -4,6 +4,7 @@ constant = 5
 for i in range(8):
     initial_value = initial_value + constant
 print(initial_value)
+import torch
 import torch.nn as nn
 x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
 def forward(self, x):
