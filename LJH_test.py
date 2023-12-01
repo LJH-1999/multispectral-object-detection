@@ -24,7 +24,7 @@ from utils.torch_utils import time_synchronized
 from timm.models.vision_transformer import Mlp
 
 from torch.nn import init, Sequential
-
+x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
 class CrossAttention(nn.Module):
     def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0.):
         super().__init__()
