@@ -139,14 +139,19 @@ class CrossViT(nn.Module):
             module.bias.data.zero_()
             module.weight.data.fill_(1.0)
 
+    x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
+    print(x.shape)
+
     def forward(self, x):
         """
         Args:
             x (tuple?)
 
         """
+        print(x.shape)
         rgb_fea = x[0]  # rgb_fea (tensor): dim:(B, C, H, W)
         ir_fea = x[1]   # ir_fea (tensor): dim:(B, C, H, W)
+        print(rgb_fea.shape)
         assert rgb_fea.shape[0] == ir_fea.shape[0]
         bs, c, h, w = rgb_fea.shape
 
@@ -156,6 +161,7 @@ class CrossViT(nn.Module):
         # AvgPooling for reduce the dimension due to expensive computation
         rgb_fea = self.avgpool(rgb_fea)
         ir_fea = self.avgpool(ir_fea)  # dim:(B, C, 8, 8)
+        print(rgb_fea.shape)
 
         # -------------------------------------------------------------------------
         # Transformer
@@ -167,19 +173,23 @@ class CrossViT(nn.Module):
         token_embeddings = token_embeddings.permute(0, 2,
                                                     1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
+        print(x.shape)
 
         for i in range(self.n_layers-1):
             x = torch.cat([self.fusion[i](x), ir_fea_flat], dim=2)
         x = self.fusion[-1](x)
+        print(x.shape)
 
         # decoder head
         x = self.ln_f(x)  # dim:(B, H*W, C)
         x = x.view(bs, self.vert_anchors, self.horz_anchors, self.n_embd)
         x = x.permute(0, 3, 1, 2)  # dim:(B, C, H, W)
+        print(x.shape)
 
         # -------------------------------------------------------------------------
         # Interpolate (or Upsample)
         # -------------------------------------------------------------------------
         rgb_fea_out = F.interpolate(x, size=([h, w]), mode='bilinear')
+        print(rgb_fea_out.shape)
         return rgb_fea_out
 
