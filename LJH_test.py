@@ -177,7 +177,10 @@ class CrossViT(nn.Module):
         print(ir_fea_flat.shape)
 
         for i in range(7):
-            x = torch.cat([self.fusion[i](x), ir_fea_flat], dim=2)
+            x = self.fusion[i](x)
+            print(x.shape)
+            x = torch.cat([x, ir_fea_flat], dim=2)
+
         x = self.fusion[-1](x)
         print(x.shape)
 
