@@ -188,7 +188,7 @@ class CrossViT(nn.Module):
         for i in range(8):
             x = self.fusion[0](x)
             print(x.shape)
-            x = torch.cat([x, ir_fea_flat], dim=2)
+            x = torch.cat([x, ir_fea_flat], dim=1)
             print(x.shape)
 
 
