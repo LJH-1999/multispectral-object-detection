@@ -436,7 +436,7 @@ model = GPT(d_model=1024, h=8, block_exp=4,
 #调用forward方法
 output = model.forward(x)
 
-print(output.shape)
+print(output)
 
 
 
