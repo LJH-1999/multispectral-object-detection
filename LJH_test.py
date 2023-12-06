@@ -141,11 +141,15 @@ class CrossViT(nn.Module):
 
         # transformer
         self.fusion = nn.ModuleList()
-        self.fusion.append(nn.Sequential(CrossAttentionBlock)
+        tmp = []
+        for i in range(self.n_layer):
+            tmp.append(CrossAttentionBlock(dim=dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop=drop, attn_drop=attn_drop,
+                 drop_path=drop_path, act_layer=act_layer, norm_layer=norm_layer, has_mlp=has_mlp))
+        self.fusion.append(nn.Sequential(*tmp))
 
 
     @staticmethod
-    def init_weights(module):
+    def _init_weights(module):
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0.0, std=0.02)
             if module.bias is not None:
