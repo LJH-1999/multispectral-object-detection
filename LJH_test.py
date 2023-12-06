@@ -141,7 +141,8 @@ class CrossViT(nn.Module):
 
         # transformer
         self.fusion = nn.ModuleList()
-        self.fusion.append(CrossAttentionBlock)
+        self.fusion.append(CrossAttentionBlock(dim=dim, num_heads=num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
+                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, has_mlp=True))
 
 
     @staticmethod
