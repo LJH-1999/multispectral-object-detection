@@ -103,7 +103,7 @@ class CrossAttentionBlock(nn.Module):
 
 x = nn.Parameter(torch.zeros(32, 400, 1024))
  # 创建CrossAttention类的实例
-model = CrossAttention(dim=1024, num_heads=8, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
+model = CrossAttention(dim=1024, num_heads=8, mlp_ratio=4, qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, has_mlp=True)
 
 # 调用forward方法
