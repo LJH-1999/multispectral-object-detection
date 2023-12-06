@@ -101,136 +101,127 @@ class CrossAttentionBlock(nn.Module):
 
         return x
 
-x = nn.Parameter(torch.zeros(32, 400, 1024))
- # 创建CrossAttention类的实例
-model = CrossAttentionBlock(dim=1024, num_heads=8, mlp_ratio=4, qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, has_mlp=True)
-
-# 调用forward方法
-output = model.forward(x)
-print(output.shape)
-
-
-
-# class CrossViT(nn.Module):
-#     def __init__(self, dim, n_layer=8, num_heads=8, mlp_ratio=4.,
-#                  qkv_bias=False, qk_scale=None, vert_anchors=8, horz_anchors=8,
-#                  drop=0., embd_pdrop=0.1, attn_drop=0., drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, has_mlp=True):
-#         super().__init__()
-#
-#         self.n_layer = n_layer
-#         self.n_embd = dim
-#         self.vert_anchors = vert_anchors
-#         self.horz_anchors = horz_anchors
-#
-#
-#         # positional embedding parameter (learnable), rgb_fea + ir_fea
-#         self.pos_emb = nn.Parameter(torch.zeros(1, 2*vert_anchors * horz_anchors, self.n_embd))
-#
-#         # decoder head
-#         self.ln_f = nn.LayerNorm(self.n_embd)
-#
-#         # regularization
-#         self.drop = nn.Dropout(embd_pdrop)
-#
-#         # avgpool
-#         self.avgpool = nn.AdaptiveAvgPool2d((self.vert_anchors, self.horz_anchors))
-#
-#         # init weights
-#         self.apply(self._init_weights)
-#
-#         # transformer
-#         self.fusion = nn.ModuleList()
-#         tmp = []
-#         for i in range(self.n_layer):
-#             tmp.append(CrossAttentionBlock(dim=dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop=drop, attn_drop=attn_drop,
-#                  drop_path=drop_path, act_layer=act_layer, norm_layer=norm_layer, has_mlp=has_mlp))
-#         self.fusion.append(nn.Sequential(*tmp))
-#
-#
-#     @staticmethod
-#     def _init_weights(module):
-#         if isinstance(module, nn.Linear):
-#             module.weight.data.normal_(mean=0.0, std=0.02)
-#             if module.bias is not None:
-#                 module.bias.data.zero_()
-#         elif isinstance(module, nn.LayerNorm):
-#             module.bias.data.zero_()
-#             module.weight.data.fill_(1.0)
-#
-#     x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
-#     print(x.shape)
-#
-#     def forward(self, x):
-#         """
-#         Args:
-#             x (tuple?)
-#
-#         """
-#         print(x.shape)
-#         rgb_fea = x[0]  # rgb_fea (tensor): dim:(B, C, H, W)
-#         ir_fea = x[1]   # ir_fea (tensor): dim:(B, C, H, W)
-#         print(rgb_fea.shape)
-#         assert rgb_fea.shape[0] == ir_fea.shape[0]
-#         bs, c, h, w = rgb_fea.shape
-#
-#         # -------------------------------------------------------------------------
-#         # AvgPooling
-#         # -------------------------------------------------------------------------
-#         # AvgPooling for reduce the dimension due to expensive computation
-#         rgb_fea = self.avgpool(rgb_fea)
-#         ir_fea = self.avgpool(ir_fea)  # dim:(B, C, 8, 8)
-#         print(rgb_fea.shape)
-#
-#         # -------------------------------------------------------------------------
-#         # Transformer
-#         # -------------------------------------------------------------------------
-#         # pad token embeddings along number of tokens dimension
-#         rgb_fea_flat = rgb_fea.view(bs, c, -1)  # flatten the feature b,c n
-#         ir_fea_flat = ir_fea.view(bs, c, -1)  # flatten the feature b, c n
-#         token_embeddings = torch.cat([rgb_fea_flat, ir_fea_flat], dim=2)  # concat
-#         token_embeddings = token_embeddings.permute(0, 2,
-#                                                     1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
-#         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
-#         print(x.shape) #(b,2n,c)
-#         print(ir_fea_flat.shape) #(b,c,n)
-#
-#         x = self.fusion[0](x)
-#         print(x.shape)
-#
-#         # for i in range(7):
-#         #     x = self.fusion[i](x)
-#         #     print(x.shape)
-#         #     x = torch.cat([x, ir_fea_flat], dim=2)
-#
-#         x = self.fusion[-1](x)
-#         print(x.shape)
-#
-#         # decoder head
-#         x = self.ln_f(x)  # dim:(B, H*W, C)
-#         x = x.view(bs, self.vert_anchors, self.horz_anchors, self.n_embd)
-#         x = x.permute(0, 3, 1, 2)  # dim:(B, C, H, W)
-#         print(x.shape)
-#
-#         # -------------------------------------------------------------------------
-#         # Interpolate (or Upsample)
-#         # -------------------------------------------------------------------------
-#         rgb_fea_out = F.interpolate(x, size=([h, w]), mode='bilinear')
-#         print(rgb_fea_out.shape)
-#         return rgb_fea_out
-#
-# x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
-#
-# # 创建CrossViT类的实例
-# model = CrossViT(dim=1024, n_layer=8, num_heads=8, mlp_ratio=4,
-#                      qkv_bias=False, qk_scale=None, vert_anchors=8, horz_anchors=8,
-#                      drop=0, embd_pdrop=0.1, attn_drop=0, drop_path=0, act_layer=nn.GELU, norm_layer=nn.LayerNorm,
-#                      has_mlp=True)
+# x = nn.Parameter(torch.zeros(32, 400, 1024))
+#  # 创建CrossAttentionBlock类的实例
+# model = CrossAttentionBlock(dim=1024, num_heads=8, mlp_ratio=4, qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
+#                  drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, has_mlp=True)
 #
 # # 调用forward方法
 # output = model.forward(x)
-#
 # print(output.shape)
+
+
+
+class CrossViT(nn.Module):
+    def __init__(self, dim, n_layer=8, num_heads=8, mlp_ratio=4.,
+                 qkv_bias=False, qk_scale=None, vert_anchors=8, horz_anchors=8,
+                 drop=0., embd_pdrop=0.1, attn_drop=0., drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, has_mlp=True):
+        super().__init__()
+
+        self.n_layer = n_layer
+        self.n_embd = dim
+        self.vert_anchors = vert_anchors
+        self.horz_anchors = horz_anchors
+
+
+        # positional embedding parameter (learnable), rgb_fea + ir_fea
+        self.pos_emb = nn.Parameter(torch.zeros(1, 2*vert_anchors * horz_anchors, self.n_embd))
+
+        # decoder head
+        self.ln_f = nn.LayerNorm(self.n_embd)
+
+        # regularization
+        self.drop = nn.Dropout(embd_pdrop)
+
+        # avgpool
+        self.avgpool = nn.AdaptiveAvgPool2d((self.vert_anchors, self.horz_anchors))
+
+        # init weights
+        self.apply(self._init_weights)
+
+        # transformer
+        self.fusion = nn.ModuleList()
+        self.fusion.append(nn.Sequential(CrossAttentionBlock)
+
+
+    @staticmethod
+    def _init_weights(module):
+        if isinstance(module, nn.Linear):
+            module.weight.data.normal_(mean=0.0, std=0.02)
+            if module.bias is not None:
+                module.bias.data.zero_()
+        elif isinstance(module, nn.LayerNorm):
+            module.bias.data.zero_()
+            module.weight.data.fill_(1.0)
+
+    def forward(self, x):
+        """
+        Args:
+            x (tuple?)
+
+        """
+        print(x.shape)
+        rgb_fea = x[0]  # rgb_fea (tensor): dim:(B, C, H, W)
+        ir_fea = x[1]   # ir_fea (tensor): dim:(B, C, H, W)
+        print(rgb_fea.shape)
+        assert rgb_fea.shape[0] == ir_fea.shape[0]
+        bs, c, h, w = rgb_fea.shape
+
+        # -------------------------------------------------------------------------
+        # AvgPooling
+        # -------------------------------------------------------------------------
+        # AvgPooling for reduce the dimension due to expensive computation
+        rgb_fea = self.avgpool(rgb_fea)
+        ir_fea = self.avgpool(ir_fea)  # dim:(B, C, 8, 8)
+        print(rgb_fea.shape)
+
+        # -------------------------------------------------------------------------
+        # Transformer
+        # -------------------------------------------------------------------------
+        # pad token embeddings along number of tokens dimension
+        rgb_fea_flat = rgb_fea.view(bs, c, -1)  # flatten the feature b,c n
+        ir_fea_flat = ir_fea.view(bs, c, -1)  # flatten the feature b, c n
+        token_embeddings = torch.cat([rgb_fea_flat, ir_fea_flat], dim=2)  # concat
+        token_embeddings = token_embeddings.permute(0, 2,
+                                                    1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
+        x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
+        print(x.shape) #(b,2n,c)
+        print(ir_fea_flat.shape) #(b,c,n)
+
+        x = self.fusion[0](x)
+        print(x.shape)
+
+        # for i in range(7):
+        #     x = self.fusion[i](x)
+        #     print(x.shape)
+        #     x = torch.cat([x, ir_fea_flat], dim=2)
+
+
+        # decoder head
+        x = self.ln_f(x)  # dim:(B, H*W, C)
+        x = x.view(bs, self.vert_anchors, self.horz_anchors, self.n_embd)
+        x = x.permute(0, 3, 1, 2)  # dim:(B, C, H, W)
+        print(x.shape)
+
+        # -------------------------------------------------------------------------
+        # Interpolate (or Upsample)
+        # -------------------------------------------------------------------------
+        rgb_fea_out = F.interpolate(x, size=([h, w]), mode='bilinear')
+        print(rgb_fea_out.shape)
+        return rgb_fea_out
+
+x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
+
+# 创建CrossViT类的实例
+model = CrossViT(dim=1024, n_layer=8, num_heads=8, mlp_ratio=4,
+                     qkv_bias=False, qk_scale=None, vert_anchors=8, horz_anchors=8,
+                     drop=0, embd_pdrop=0.1, attn_drop=0, drop_path=0, act_layer=nn.GELU, norm_layer=nn.LayerNorm,
+                     has_mlp=True)
+
+# 调用forward方法
+output = model.forward(x)
+
+print(output.shape)
 
 
 
