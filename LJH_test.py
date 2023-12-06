@@ -189,6 +189,7 @@ class CrossViT(nn.Module):
             x = self.fusion[0](x)
             print(x.shape)
             x = torch.cat([x, ir_fea_flat], dim=2)
+            print(x.shape)
 
 
         # decoder head
