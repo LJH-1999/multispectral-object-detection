@@ -145,7 +145,7 @@ class CrossViT(nn.Module):
 
 
     @staticmethod
-    def _init_weights(module):
+    def init_weights(module):
         if isinstance(module, nn.Linear):
             module.weight.data.normal_(mean=0.0, std=0.02)
             if module.bias is not None:
