@@ -173,13 +173,16 @@ class CrossViT(nn.Module):
         token_embeddings = token_embeddings.permute(0, 2,
                                                     1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
-        print(x.shape)
-        print(ir_fea_flat.shape)
+        print(x.shape) #(b,2n,c)
+        print(ir_fea_flat.shape) #(b,c,n)
 
-        for i in range(7):
-            x = self.fusion[i](x)
-            print(x.shape)
-            x = torch.cat([x, ir_fea_flat], dim=2)
+        x = self.fusion[0](x)
+        print(x.shape)
+
+        # for i in range(7):
+        #     x = self.fusion[i](x)
+        #     print(x.shape)
+        #     x = torch.cat([x, ir_fea_flat], dim=2)
 
         x = self.fusion[-1](x)
         print(x.shape)
