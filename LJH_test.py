@@ -200,7 +200,7 @@ class CrossViT(nn.Module):
         # Interpolate (or Upsample)
         # -------------------------------------------------------------------------
         rgb_fea_out = F.interpolate(x, size=([h, w]), mode='bilinear')
-        ir_fea_out = F.interpolate(rgb_fea_out, size=([h, w]), mode='bilinear')
+        ir_fea_out = rgb_fea_out
         return rgb_fea_out, ir_fea_out
 
 x = nn.Parameter(torch.zeros(2, 32, 1024, 20, 20))
