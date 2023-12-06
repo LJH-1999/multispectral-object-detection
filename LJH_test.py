@@ -216,6 +216,7 @@ output = model.forward(x)
 
 print(output[0].shape)
 print(output[1].shape)
+print(output.shape)
 
 # class SelfAttention(nn.Module):
 #     """
