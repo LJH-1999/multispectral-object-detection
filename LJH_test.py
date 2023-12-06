@@ -185,6 +185,7 @@ class CrossViT(nn.Module):
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
 
         x = self.fusion[0](x)
+        print(x.shape)
 
         # for i in range(7):
         #     x = self.fusion[i](x)
