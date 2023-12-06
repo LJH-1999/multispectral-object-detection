@@ -736,11 +736,8 @@ class CrossViT(nn.Module):
 
         # transformer
         self.fusion = nn.ModuleList()
-        tmp = []
-        for i in range(self.n_layer):
-            tmp.append(CrossAttentionBlock(dim=dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop=drop, attn_drop=attn_drop,
-                 drop_path=drop_path, act_layer=act_layer, norm_layer=norm_layer, has_mlp=has_mlp))
-        self.fusion.append(nn.Sequential(*tmp))
+        self.fusion.append(CrossAttentionBlock(dim=dim, num_heads=num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
+                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, has_mlp=True))
 
 
     @staticmethod
@@ -781,10 +778,13 @@ class CrossViT(nn.Module):
         token_embeddings = token_embeddings.permute(0, 2,
                                                     1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
+        ir_fea_flat = ir_fea_flat.permute(0, 2, 1)
 
-        for i in range(self.n_layers-1):
-            x = torch.cat([self.fusion[i](x), ir_fea_flat], dim=2)
-        x = self.fusion[-1](x)
+        for i in range(7):
+            x = self.fusion[0](x)
+            x = torch.cat([x, ir_fea_flat], dim=1)
+        x = self.fusion[0](x)
+
 
         # decoder head
         x = self.ln_f(x)  # dim:(B, H*W, C)
