@@ -528,6 +528,9 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
         elif m is GPT:
             c2 = ch[f[0]]
             args = [c2]
+        elif m is CrossViT:
+            c2 = ch[f[0]]
+            args = [c2]
         elif m is Detect:
             args.append([ch[x] for x in f])
             if isinstance(args[1], int):  # number of anchors

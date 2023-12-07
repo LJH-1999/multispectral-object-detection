@@ -14,7 +14,7 @@ backbone:
   # [from, number, module, args]
   # Two Stream
   [
-    ######### TransformerBlock One #############
+
     # stream one
     [-1, 1, Focus, [64, 3]],    # 0-P1/2
     [-1, 1, Conv, [128, 3, 2]], # 1-P2/4
@@ -29,14 +29,14 @@ backbone:
     [-1, 9, C3, [256]],   # 9-P3/8
 
     
-    ######### TransformerBlock Two #############
+    ######### TransformerBlock one #############
    # transformer fusion
     [[4,9], 1, GPT, [256]],   # 10-P3/8
     [[4,10], 1, Add2, [256,0]],    # 11-P3/8 stream one x+trans[0]
     [[9,10], 1, Add2, [256,1]],    # 12-P3/8 stream two x+trans[1]
 
 
-   ######### TransformerBlock Three #############
+   ######### TransformerBlock Two #############
    # stream one
     [11, 1, Conv, [512, 3, 2]],   # 13-P4/16
     [-1, 9, C3, [512]],   # 14-P4/16
@@ -49,7 +49,7 @@ backbone:
     [[16,17], 1, Add2, [512,1]],    # 19-P3/8 stream two x+trans[1]
 
 
-    ######### TransformerBlock Four #############
+    ######### TransformerBlock three #############
     # stream one
     [18, 1, Conv, [1024, 3, 2]],    # 20-P5/32
     [-1, 1, SPP, [1024, [5, 9, 13]]],   # 21-P5/32
