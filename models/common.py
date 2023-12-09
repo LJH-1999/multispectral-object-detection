@@ -779,7 +779,9 @@ class CrossViT(nn.Module):
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
         ir_fea_flat = ir_fea_flat.permute(0, 2, 1)
 
-        for i in range(7):
+
+
+        for i in range(self.n_layer-1):
             x = self.fusion[0](x)
             x = torch.cat([x, ir_fea_flat], dim=1)
         x = self.fusion[0](x)
