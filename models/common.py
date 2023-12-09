@@ -768,8 +768,6 @@ class CrossViT(nn.Module):
         ir_fea = self.avgpool(ir_fea)  # dim:(B, C, 8, 8)
 
         # -------------------------------------------------------------------------
-        # Transformer
-        # -------------------------------------------------------------------------
         # pad token embeddings along number of tokens dimension
         rgb_fea_flat = rgb_fea.view(bs, c, -1)  # flatten the feature b,c n
         ir_fea_flat = ir_fea.view(bs, c, -1)  # flatten the feature b, c n
@@ -777,13 +775,14 @@ class CrossViT(nn.Module):
         token_embeddings = token_embeddings.permute(0, 2,
                                                     1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
-        ir_fea_flat = ir_fea_flat.permute(0, 2, 1)
+        ir_fea_flat = ir_fea_flat.permute(0, 2, 1) #b,n,c 便于计算
         rgb_fea_flat = rgb_fea_flat.permute(0, 2, 1)
         x_1 = x
         x_2 = x
 
-
-
+        # Cross-Attention fusion Transformer
+        #x_1 分支是rgb流主动去与ir流计算向量的相关性，也就是主动融合ir的信息，然后重新加回到rgb分支特征上
+        # -------------------------------------------------------------------------
         for i in range(self.n_layer-1):
             x_1 = self.fusion[0](x_1)
             x_1 = torch.cat([x_1, ir_fea_flat], dim=1)
@@ -800,6 +799,9 @@ class CrossViT(nn.Module):
         # -------------------------------------------------------------------------
         rgb_fea_out = F.interpolate(x_1, size=([h, w]), mode='bilinear')
 
+        # Cross-Attention fusion Transformer
+        # x_2 分支是ir流主动去与rgb流计算向量的相关性，也就是主动融合rgb的信息，然后重新加回到ir分支特征上
+        # -------------------------------------------------------------------------
         for i in range(self.n_layer-1):
             x_2 = self.fusion[0](x_2)
             x_2 = torch.cat([x_2, rgb_fea_flat], dim=1)
