@@ -1,5 +1,5 @@
 # parameters
-nc: 3  # number of classes
+nc: 1  # number of classes
 depth_multiple: 1.00  # model depth multiple
 width_multiple: 1.00  # layer channel multiple
 
@@ -31,7 +31,7 @@ backbone:
     
     ######### TransformerBlock one #############
    # transformer fusion
-    [[4,9], 1, CrossViT, [256]],   # 10-P3/8
+    [[4,9], 1, GPT, [256]],   # 10-P3/8
     [[4,10], 1, Add2, [256,0]],    # 11-P3/8 stream one x+trans[0]
     [[9,10], 1, Add2, [256,1]],    # 12-P3/8 stream two x+trans[1]
 
@@ -44,7 +44,7 @@ backbone:
     [12, 1, Conv, [512, 3, 2]],   # 15-P4/16
     [-1, 9, C3, [512]],   # 16-P4/16
    # transformer fusion
-    [[14,16], 1, CrossViT, [512]],   # 17-P3/16
+    [[14,16], 1, GPT, [512]],   # 17-P3/16
     [[14,17], 1, Add2, [512,0]],    # 18-P3/16 stream one x+trans[0]
     [[16,17], 1, Add2, [512,1]],    # 19-P3/16 stream two x+trans[1]
 
