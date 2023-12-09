@@ -778,24 +778,43 @@ class CrossViT(nn.Module):
                                                     1).contiguous()  # dim:(B, 2*H*W, C) .contiguous()方法在底层开辟新内存，在内存上tensor是连续的
         x = self.drop(self.pos_emb + token_embeddings)  # sum positional embedding and token    dim:(B, 2n, C)
         ir_fea_flat = ir_fea_flat.permute(0, 2, 1)
+        rgb_fea_flat = rgb_fea_flat.permute(0, 2, 1)
+        x_1 = x
+        x_2 = x
 
 
 
         for i in range(self.n_layer-1):
-            x = self.fusion[0](x)
-            x = torch.cat([x, ir_fea_flat], dim=1)
-        x = self.fusion[0](x)
+            x_1 = self.fusion[0](x_1)
+            x_1 = torch.cat([x_1, ir_fea_flat], dim=1)
+        x_1 = self.fusion[0](x_1)
 
 
         # decoder head
-        x = self.ln_f(x)  # dim:(B, H*W, C)
-        x = x.view(bs, self.vert_anchors, self.horz_anchors, self.n_embd)
-        x = x.permute(0, 3, 1, 2)  # dim:(B, C, H, W)
+        x_1 = self.ln_f(x_1)  # dim:(B, H*W, C)
+        x_1 = x_1.view(bs, self.vert_anchors, self.horz_anchors, self.n_embd)
+        x_1 = x_1.permute(0, 3, 1, 2)  # dim:(B, C, H, W)
 
         # -------------------------------------------------------------------------
         # Interpolate (or Upsample)
         # -------------------------------------------------------------------------
-        rgb_fea_out = F.interpolate(x, size=([h, w]), mode='bilinear')
-        ir_fea_out = rgb_fea_out
+        rgb_fea_out = F.interpolate(x_1, size=([h, w]), mode='bilinear')
+
+        for i in range(self.n_layer-1):
+            x_2 = self.fusion[0](x_2)
+            x_2 = torch.cat([x_2, rgb_fea_flat], dim=1)
+        x_2 = self.fusion[0](x_2)
+
+
+        # decoder head
+        x_2 = self.ln_f(x_2)  # dim:(B, H*W, C)
+        x_2 = x_2.view(bs, self.vert_anchors, self.horz_anchors, self.n_embd)
+        x_2 = x_2.permute(0, 3, 1, 2)  # dim:(B, C, H, W)
+
+        # -------------------------------------------------------------------------
+        # Interpolate (or Upsample)
+        # -------------------------------------------------------------------------
+        ir_fea_out = F.interpolate(x_2, size=([h, w]), mode='bilinear')
+
         return rgb_fea_out, ir_fea_out
 
