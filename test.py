@@ -369,3 +369,10 @@ if __name__ == '__main__':
             np.savetxt(f, y, fmt='%10.4g')  # save
         os.system('zip -r study.zip study_*.txt')
         plot_study_txt(x=x)  # plot
+
+# 获取 activations 中保存的中间层输出
+if 'crossVitOutput' in activations:
+    intermediate_output = activations['crossVitOutput']
+    # 在这里可以进一步处理中间层输出，例如可视化、保存到文件等
+else:
+    print("No intermediate output found in activations.")

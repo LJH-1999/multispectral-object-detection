@@ -21,6 +21,8 @@ from timm.models.vision_transformer import Mlp
 
 from torch.nn import init, Sequential
 
+activations = {}  # 全局字典用于存储中间层输出
+
 
 def autopad(k, p=None):  # kernel, padding
     # Pad to 'same'
@@ -740,6 +742,9 @@ class CrossViT(nn.Module):
         self.fusion = nn.Sequential(CrossAttentionBlock(dim=dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale, drop=drop, attn_drop=attn_drop,
                  drop_path=drop_path, act_layer=act_layer, norm_layer=norm_layer, has_mlp=has_mlp))
 
+        #hook
+        self.fusion.register_forward_hook(self.get_activation('crossVitOutput'))
+
 
     @staticmethod
     def _init_weights(module):
@@ -821,4 +826,10 @@ class CrossViT(nn.Module):
         ir_fea_out = F.interpolate(x_2, size=([h, w]), mode='bilinear')
 
         return rgb_fea_out, ir_fea_out
+
+    def get_activation(self, name):
+        def hook(module, input, output):
+            activations[name] = output.detach()
+
+        return hook
 
