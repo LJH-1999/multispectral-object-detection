@@ -17,7 +17,8 @@ from utils.metrics import ap_per_class, ConfusionMatrix
 from utils.plots import plot_images, output_to_target, plot_study_txt
 from utils.torch_utils import select_device, time_synchronized
 import sys
-sys.path.append("/home/watanabelab/multispectural-object-detection/liujiahao/multispectral-object-detection/models/common.py")
+sys.path.append("/multispectral-object-detection/models/common.py")
+
 
 def test(data,
          weights=None,
