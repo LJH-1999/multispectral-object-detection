@@ -16,10 +16,8 @@ from utils.general import coco80_to_coco91_class, check_dataset, check_file, che
 from utils.metrics import ap_per_class, ConfusionMatrix
 from utils.plots import plot_images, output_to_target, plot_study_txt
 from utils.torch_utils import select_device, time_synchronized
-import imp
-common = imp.load_source('common', '/home/watanabelab/multispectural-object-detection/liujiahao/multispectral-object-detection/models/common.py')
-activations = common.activations
 
+from models.common import ACTIVATION
 
 
 def test(data,
@@ -59,6 +57,15 @@ def test(data,
 
         # Load model
         model = attempt_load(weights, map_location=device)  # load FP32 model
+        from models.common import CrossViT
+        import torch.nn as nn
+        for childs in model.children():
+            if isinstance(childs, nn.Sequential):
+                for child in childs.children():
+                    if isinstance(child, CrossViT):
+                        print(type(child.fusion[0].attn))
+                        child.fusion[0].attn.register_forward_hook(child.get_activation('crossVitOutput'))
+                        print('GOT IT ***************')
         gs = max(int(model.stride.max()), 32)  # grid size (max stride)
         imgsz = check_img_size(imgsz, s=gs)  # check img_size
 
@@ -120,6 +127,11 @@ def test(data,
             # Run model
             t = time_synchronized()
             out, train_out = model(img_rgb, img_ir, augment=augment)  # inference and training outputs
+            if 'crossVitOutput' in ACTIVATION:
+                intermediate_output = ACTIVATION['crossVitOutput']
+                # 在这里可以进一步处理中间层输出，例如可视化、保存到文件等
+            else:
+                raise Exception("No intermediate output found in ACTIVATION.")
             t0 += time_synchronized() - t
 
             # Compute loss
@@ -301,7 +313,7 @@ def test(data,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='test.py')
-    parser.add_argument('--weights', nargs='+', type=str, default='/home/watanabelab/multispectural-object-detection/liujiahao/runs/train/11.16/weights/best.pt', help='model.pt path(s)')
+    parser.add_argument('--weights', nargs='+', type=str, default='/home/watanabelab/multispectural-object-detection/liujiahao/runs/train/12.9/weights/best.pt', help='model.pt path(s)')
     parser.add_argument('--data', type=str, default='./data/multispectral/LLVIP.yaml', help='*.data path')
     parser.add_argument('--batch-size', type=int, default=64, help='size of each image batch')
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
@@ -374,9 +386,9 @@ if __name__ == '__main__':
         os.system('zip -r study.zip study_*.txt')
         plot_study_txt(x=x)  # plot
 
-# 获取 activations 中保存的中间层输出
-if 'crossVitOutput' in activations:
-    intermediate_output = activations['crossVitOutput']
+# 获取 ACTIVATION 中保存的中间层输出
+if 'crossVitOutput' in ACTIVATION:
+    intermediate_output = ACTIVATION['crossVitOutput']
     # 在这里可以进一步处理中间层输出，例如可视化、保存到文件等
 else:
-    print("No intermediate output found in activations.")
+    print("No intermediate output found in ACTIVATION.")

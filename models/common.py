@@ -20,8 +20,9 @@ from utils.torch_utils import time_synchronized
 from timm.models.vision_transformer import Mlp
 
 from torch.nn import init, Sequential
+import matplotlib.pyplot as plt
 
-activations = {}  # 全局字典用于存储中间层输出
+ACTIVATION = {}  # 全局字典用于存储中间层输出
 
 
 def autopad(k, p=None):  # kernel, padding
@@ -825,9 +826,28 @@ class CrossViT(nn.Module):
 
         return rgb_fea_out, ir_fea_out
 
-    def get_activation(self, name):
+    @staticmethod
+    def get_activation(name):
         def hook(module, input, output):
-            activations[name] = output.detach()
+            x = input[0]
+            B, N, C = x.shape
+            q = module.wq(x[:, 0:N // 2, ...]).reshape(B, N // 2, module.num_heads, C // module.num_heads).permute(0, 2, 1,
+                                                                                                             3)  # B(N//2)C -> B(N//2)H(C/H) -> BH(N//2)(C/H)
+            k = module.wk(x).reshape(B, N, module.num_heads, C // module.num_heads).permute(0, 2, 1,
+                                                                                      3)  # BNC -> BNH(C/H) -> BHN(C/H)
 
+            attn = (q @ k.transpose(-2, -1)) * module.scale  # BH(N//2)(C/H) @ BH(C/H)N -> BH(N//2)N
+
+            attn = attn[0]  # H (N/2) N
+            for i, _attn in enumerate(attn):
+                fig, ax = plt.subplots()
+                _attn = _attn.detach().cpu().numpy()
+                ax.imshow(_attn)
+                ax.axis('off')
+                plt.show()
+                fig.savefig(f'attention_map_{i}.png')  # 保存图片到文件，可以自定义文件名和路径
+                plt.close(fig)
+            # ACTIVATION[name] = output
         return hook
 
+        
