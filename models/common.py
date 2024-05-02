@@ -670,7 +670,6 @@ class CrossAttention(nn.Module):
                 if m.bias is not None:
                     init.constant_(m.bias, 0)
     def forward(self, x):
-        x_1 = x
         B, N, C = x.shape
         q = self.wq(x[:, 0:N//2, ...]).reshape(B, N//2, self.num_heads, C // self.num_heads).permute(0, 2, 1,
                                                                                            3)  # B(N//2)C -> B(N//2)H(C/H) -> BH(N//2)(C/H)
@@ -682,7 +681,6 @@ class CrossAttention(nn.Module):
         attn = self.attn_drop(attn)
 
         x = (attn @ v).transpose(1, 2).reshape(B, N//2, C)  # (BH(N//2)N @ BHN(C/H)) -> BH(N//2)(C/H) -> B(N//2)H(C/H) -> B(N//2)C
-        x = x_1+x
         x = self.proj(x)
         x = self.proj_drop(x)
         return x
