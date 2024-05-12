@@ -5,20 +5,21 @@ from pathlib import Path
 from models.experimental import attempt_load
 from utils.datasets import create_dataloader_rgb_ir
 from utils.torch_utils import select_device, time_synchronized
-from utils.general import check_img_size, increment_path
+from utils.general import coco80_to_coco91_class, check_dataset, check_file, check_img_size, check_requirements, \
+    box_iou, non_max_suppression, scale_coords, xyxy2xywh, xywh2xyxy, set_logging, increment_path, colorstr
 from models.common import CrossViT
+from models.common import ACTIVATION
 
 def test(data,
-         weights,
-         batch_size,
-         imgsz,
+         weights=None,
+         batch_size=32,
+         imgsz=640,
          conf_thres,
          iou_thres,
-         device='0',
          half_precision=True,
          opt=None):
     # 设定设备
-    #set_logging()
+    set_logging()
     device = select_device(opt.device, batch_size=batch_size)
 
     # Directories
