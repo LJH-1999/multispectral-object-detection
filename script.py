@@ -14,8 +14,6 @@ def test(data,
          weights=None,
          batch_size=32,
          imgsz=640,
-         conf_thres,
-         iou_thres,
          half_precision=True,
          opt=None):
     # 设定设备
