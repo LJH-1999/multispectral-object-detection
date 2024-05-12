@@ -131,7 +131,7 @@ def test(data,
             if 'activation_crossVitOutput' in ACTIVATION:
                 intermediate_output = ACTIVATION['activation_crossVitOutput']
                 # 在这里可以进一步处理中间层输出，例如可视化、保存到文件等
-                print("Intermediate output found:", intermediate_output)
+                #print("Intermediate output found:", intermediate_output)
             else:
                 raise Exception("No intermediate output found in ACTIVATION.")
 
