@@ -828,6 +828,7 @@ class CrossViT(nn.Module):
 
     @staticmethod
     def get_activation(name):
+        crossVitOutput = f'activation_{name}'
         def hook(module, input, output):
             x = input[0]
             B, N, C = x.shape
