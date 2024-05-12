@@ -18,7 +18,7 @@ from utils.plots import plot_images, output_to_target, plot_study_txt
 from utils.torch_utils import select_device, time_synchronized
 
 from models.common import ACTIVATION
-ACTIVATION = {}
+
 
 def test(data,
          weights=None,
