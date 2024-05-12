@@ -849,7 +849,7 @@ class CrossViT(nn.Module):
                 fig.savefig(f'attention_map_{i}.png')  # 保存图片到文件，可以自定义文件名和路径
                 plt.close(fig)
             print("Hook called")
-            print("Output:", output)
+            #print("Output:", output)
             ACTIVATION[crossVitOutput] = output
             print("Current ACTIVATION keys:", ACTIVATION.keys())  # 查看当前所有的键
             print("Stored Output in ACTIVATION:", ACTIVATION[crossVitOutput])  # 验证存储的输出
