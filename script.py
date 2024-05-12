@@ -18,7 +18,7 @@ def test(data,
          half_precision=True,
          opt=None):
     # 设定设备
-    set_logging()
+    #set_logging()
     device = select_device(opt.device, batch_size=batch_size)
 
     # Directories
