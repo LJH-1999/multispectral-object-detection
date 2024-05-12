@@ -127,12 +127,19 @@ def test(data,
             # Run model
             t = time_synchronized()
             out, train_out = model(img_rgb, img_ir, augment=augment)  # inference and training outputs
+            """
             if 'crossVitOutput' in ACTIVATION:
                 intermediate_output = ACTIVATION['activation_crossVitOutput']
                 # 在这里可以进一步处理中间层输出，例如可视化、保存到文件等
                 print("Intermediate output found:", intermediate_output)
             else:
                 raise Exception("No intermediate output found in ACTIVATION.")
+            """
+            try:
+                intermediate_output = ACTIVATION['activation_crossVitOutput']
+                print("Intermediate output found:", intermediate_output)
+            except KeyError as e:
+                print(f"KeyError: {str(e)}")  # 打印错误信息，如果键不存在
             t0 += time_synchronized() - t
 
             # Compute loss
