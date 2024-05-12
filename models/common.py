@@ -847,7 +847,7 @@ class CrossViT(nn.Module):
                 plt.show()
                 fig.savefig(f'attention_map_{i}.png')  # 保存图片到文件，可以自定义文件名和路径
                 plt.close(fig)
-            # ACTIVATION[name] = output
+            ACTIVATION[crossVitOutput] = output
         return hook
 
         
