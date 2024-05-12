@@ -128,7 +128,7 @@ def test(data,
             t = time_synchronized()
             out, train_out = model(img_rgb, img_ir, augment=augment)  # inference and training outputs
             print("All activations stored:", ACTIVATION)
-            if 'crossVitOutput' in ACTIVATION:
+            if 'activation_crossVitOutput' in ACTIVATION:
                 intermediate_output = ACTIVATION['activation_crossVitOutput']
                 # 在这里可以进一步处理中间层输出，例如可视化、保存到文件等
                 print("Intermediate output found:", intermediate_output)
