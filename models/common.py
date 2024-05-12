@@ -852,7 +852,7 @@ class CrossViT(nn.Module):
             #print("Output:", output)
             ACTIVATION[crossVitOutput] = output
             print("Current ACTIVATION keys:", ACTIVATION.keys())  # 查看当前所有的键
-            print("Stored Output in ACTIVATION:", ACTIVATION[crossVitOutput])  # 验证存储的输出
+            #print("Stored Output in ACTIVATION:", ACTIVATION[crossVitOutput])  # 验证存储的输出
         return hook
 
         

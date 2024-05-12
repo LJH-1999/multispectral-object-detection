@@ -16,9 +16,9 @@ from utils.general import coco80_to_coco91_class, check_dataset, check_file, che
 from utils.metrics import ap_per_class, ConfusionMatrix
 from utils.plots import plot_images, output_to_target, plot_study_txt
 from utils.torch_utils import select_device, time_synchronized
-
+from models.common import get_activation
 from models.common import ACTIVATION
-
+ACTIVATION = {}
 
 def test(data,
          weights=None,
@@ -130,6 +130,7 @@ def test(data,
             if 'crossVitOutput' in ACTIVATION:
                 intermediate_output = ACTIVATION['crossVitOutput']
                 # 在这里可以进一步处理中间层输出，例如可视化、保存到文件等
+                print("Intermediate output found:", intermediate_output)
             else:
                 raise Exception("No intermediate output found in ACTIVATION.")
             t0 += time_synchronized() - t
