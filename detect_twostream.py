@@ -196,9 +196,9 @@ def detect(opt):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--weights', nargs='+', type=str, default='/home/fqy/proj/multispectral-object-detection/best.pt', help='model.pt path(s)')
-    parser.add_argument('--source1', type=str, default='/home/fqy/DATA/FLIR_ADAS_1_3/align/yolo/test/rgb/', help='source')  # file/folder, 0 for webcam
-    parser.add_argument('--source2', type=str, default='/home/fqy/DATA/FLIR_ADAS_1_3/align/yolo/test/ir', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--weights', nargs='+', type=str, default='/home/watanabelab/multispectural-object-detection/liujiahao/runs/train/12.10/weights/best.pt', help='model.pt path(s)')
+    parser.add_argument('--source1', type=str, default='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/visible/train', help='source')  # file/folder, 0 for webcam
+    parser.add_argument('--source2', type=str, default='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/infrared/train', help='source')  # file/folder, 0 for webcam
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
     parser.add_argument('--conf-thres', type=float, default=0.4, help='object confidence threshold')
     parser.add_argument('--iou-thres', type=float, default=0.45, help='IOU threshold for NMS')
