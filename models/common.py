@@ -839,7 +839,7 @@ class IAKNN_Block(nn.Module):
         new_point = index_points(self.device, point, idx)  # (b, k, n, c)
 
         group_point = new_point.permute(0, 3, 2, 1)  # (b, c, n, k)
-        group_point = self.co(group_point)  # 应用卷积层
+        group_point = self.co(group_point)  # 全连接 变成可学习的参数
         group_point = torch.max(group_point, 2)[0]  # 沿着k维度取最大值，(b, c, n)
 
         intra_mask = group_point.view(b, c, h, w)  # (b, c, h, w)
