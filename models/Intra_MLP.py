@@ -2,7 +2,7 @@ import torch
 import numpy
 
 
-# codes of this function are borrowed from https://github.com/yanx27/Pointnet_Pointnet2_pytorch/blob/master/models/pointnet2_utils.py
+# codes of this function are referenced from https://github.com/yanx27/Pointnet_Pointnet2_pytorch/blob/master/models/pointnet2_utils.py
 def index_points(device, points, idx):
     """
 
