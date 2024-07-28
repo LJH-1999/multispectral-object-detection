@@ -18,6 +18,7 @@ from utils.general import non_max_suppression, make_divisible, scale_coords, inc
 from utils.plots import colors, plot_one_box
 from utils.torch_utils import time_synchronized
 from timm.models.vision_transformer import Mlp
+from Intra_MLP import index_points,knn_l2
 
 from torch.nn import init, Sequential
 
@@ -819,4 +820,31 @@ class CrossViT(nn.Module):
         ir_fea_out = F.interpolate(x_2, size=([h, w]), mode='bilinear')
 
         return rgb_fea_out, ir_fea_out
+
+
+class IAKNN_Block(nn.Module):
+    def __init__(self):
+        super().__init__()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = device
+        self.co = nn.Sequential(nn.Conv2d(512, 512, 1, 1))  # 全连接
+
+    def forward(self, x):
+        b, c, h, w = x.shape
+
+        point = x.view(b, c, -1)  # (b, c, n)
+        point = point.permute(0, 2, 1)  # (b, n, c)
+
+        idx = knn_l2(self.device, point, 4, 1)  # (b, n, k)
+        new_point = index_points(self.device, point, idx)  # (b, k, n, c)
+
+        group_point = new_point.permute(0, 3, 2, 1)  # (b, c, n, k)
+        group_point = self.co(group_point)  # 应用卷积层
+        group_point = torch.max(group_point, 2)[0]  # 沿着k维度取最大值，(b, c, n)
+
+        intra_mask = group_point.view(b, c, h, w)  # (b, c, h, w)
+        intra_mask = intra_mask + x
+
+        spa_mask = nn.Sigmoid(intra_mask)  # (b, c, h, w)
+        return spa_mask
 
