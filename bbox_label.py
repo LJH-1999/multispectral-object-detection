@@ -50,7 +50,7 @@ def draw_box_and_triangle(image_path, label_path, save_dir):
         cls_id = int(cls_id)
         top_center = ((x1 + x2) // 2, y1)
         if cls_id == 9999:  # 需要绘制倒三角形的类别
-            draw_inverted_triangle(image, top_center, size=15, color=(0, 0, 255))
+            draw_inverted_triangle(image, top_center, color=(0, 0, 255))
         else:
             plot_one_box([x1, y1, x2, y2], image, label=label_map[int(cls_id)], color=colors(0, True), line_thickness=3)
 
