@@ -56,7 +56,7 @@ def draw_box_and_triangle(image_path, label_path, save_dir):
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
-    save_path = os.path.join(save_dir, f'out_{os.path.basename(image_path)}')
+    save_path = os.path.join(save_dir, f'infer_{os.path.basename(image_path)}')
     cv2.imwrite(save_path, image)
     print(f'Saved annotated image to {save_path}')
 
