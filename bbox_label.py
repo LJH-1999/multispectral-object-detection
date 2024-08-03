@@ -51,7 +51,7 @@ if __name__ == "__main__":
         # 添加更多标签根据需要
     }
 
-    draw_boxes(args.image, args.labels, args.output, label_map)
+    draw_boxes(image_path, label_path, save_dir, label_map)
 
 """"
 # 标签映射表
