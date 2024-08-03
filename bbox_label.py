@@ -45,7 +45,7 @@ for line in lines:
     y_max = y + int(h / 2)
 
     # 绘制边界框
-    color = (255, 0, 0)  # 蓝色
+    color = (255, 178, 50)  # 橙色
     thickness = 2
     cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color, thickness)
 
