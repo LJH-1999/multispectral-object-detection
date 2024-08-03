@@ -12,11 +12,11 @@ def load_labels(label_path):
     return labels
 
 # 画倒三角形
-def draw_inverted_triangle(image, center, size=10, color=(0, 0, 255), thickness=2):
+def draw_inverted_triangle(image, center, size=10, color=(0, 0, 255), thickness=2, offset=10):
     pts = np.array([
-        [center[0], center[1] - size],
-        [center[0] - size, center[1] + size],
-        [center[0] + size, center[1] + size]
+        [center[0], center[1] - offset - size],
+        [center[0] - size, center[1] - offset + size],
+        [center[0] + size, center[1] - offset + size]
     ], np.int32)
     pts = pts.reshape((-1, 1, 2))
     cv2.polylines(image, [pts], isClosed=True, color=color, thickness=thickness)
