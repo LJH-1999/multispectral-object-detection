@@ -39,12 +39,9 @@ def draw_boxes(image_path, label_path, save_dir, label_map):
 # /home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/visible/val/label.txt
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/label.txt
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Draw bounding boxes on images')
-    parser.add_argument('--image', type=str, required=True, help='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/visible/val/240260.jpg')
-    parser.add_argument('--labels', type=str, required=True, help='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/visible/val/240260.txt')
-    parser.add_argument('--output', type=str, required=True, help='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/ir/')
-
-    args = parser.parse_args()
+    image_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/infrared/val/240260.jpg"  # 输入图像路径
+    label_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/label.txt"  # 输入标签路径
+    save_dir = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/ir/"  # 输出目录
 
     # 标签映射
     label_map = {
