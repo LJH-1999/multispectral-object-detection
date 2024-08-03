@@ -5,13 +5,13 @@ import numpy as np
 # 读取图像
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/visible/val/image.jpg
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/infrared/val/image.jpg
-image_path = '/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/visible/val/240430.jpg'
+image_path = '/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/infrared/val/240430.jpg'
 image = cv2.imread(image_path)
 
 # 从文件中读取标签数据
 # /home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/visible/val/label.txt
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/label.txt
-label_file = '/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/visible/val/240430.txt'
+label_file = '/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/240430.txt'
 
 # label.txt中的数据格式
 # 0 0.2890625 0.89453125 0.084375 0.2109375
@@ -58,7 +58,7 @@ cv2.destroyAllWindows()
 output_image_name = f'output_{image_name_without_extension}{extension}'
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/ir/
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/rgb/
-output_path = os.path.join('/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/rgb/', output_image_name)
+output_path = os.path.join('/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/ir/', output_image_name)
 
 # 保存带有边界框的图像到指定路径
 cv2.imwrite(output_path, image_with_box)
