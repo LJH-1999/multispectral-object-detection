@@ -1,6 +1,62 @@
 import cv2
+import numpy as np
+from utils.plots import colors, plot_one_box
+import argparse
 import os
 
+
+def load_labels(label_path):
+    with open(label_path, 'r') as file:
+        labels = file.readlines()
+    labels = [label.strip().split() for label in labels]
+    return labels
+
+
+def draw_boxes(image_path, label_path, save_dir, label_map):
+    image = cv2.imread(image_path)
+    h, w, _ = image.shape
+    labels = load_labels(label_path)
+
+    for label in labels:
+        cls_id, x_center, y_center, width, height = map(float, label)
+        x_center, y_center, width, height = x_center * w, y_center * h, width * w, height * h
+        x1, y1, x2, y2 = x_center - width / 2, y_center - height / 2, x_center + width / 2, y_center + height / 2
+        plot_one_box([x1, y1, x2, y2], image, label=label_map[int(cls_id)], color=[255, 0, 0], line_thickness=3)
+
+    # 确保输出目录存在
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    # 获取图片的文件名并添加前缀
+    image_name = os.path.basename(image_path)
+    save_path = os.path.join(save_dir, f"inference_{image_name}")
+    cv2.imwrite(save_path, image)
+    print(f"Image saved to {save_path}")
+#图片
+#/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/visible/val/image.jpg
+#/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/infrared/val/image.jpg
+#标签
+# /home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/visible/val/label.txt
+#/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/label.txt
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Draw bounding boxes on images')
+    parser.add_argument('--image', type=str, required=True, help='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/visible/val/240260.jpg')
+    parser.add_argument('--labels', type=str, required=True, help='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/visible/val/240260.txt')
+    parser.add_argument('--output', type=str, required=True, help='/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/ir/')
+
+    args = parser.parse_args()
+
+    # 标签映射
+    label_map = {
+        0: 'person',
+        1: 'bicycle',
+        2: 'car'
+        # 添加更多标签根据需要
+    }
+
+    draw_boxes(args.image, args.labels, args.output, label_map)
+
+""""
 # 标签映射表
 label_map = {
     0: 'person',
@@ -75,3 +131,4 @@ output_path = os.path.join('/home/watanabelab/multispectural-object-detection/li
 
 # 保存带有边界框的图像到指定路径
 cv2.imwrite(output_path, image)
+"""
