@@ -21,7 +21,7 @@ def draw_boxes(image_path, label_path, save_dir, label_map):
         cls_id, x_center, y_center, width, height = map(float, label)
         x_center, y_center, width, height = x_center * w, y_center * h, width * w, height * h
         x1, y1, x2, y2 = x_center - width / 2, y_center - height / 2, x_center + width / 2, y_center + height / 2
-        plot_one_box([x1, y1, x2, y2], image, label=label_map[int(cls_id)], color=[255, 0, 0], line_thickness=3)
+        plot_one_box([x1, y1, x2, y2], image, label=label_map[int(cls_id)], color=colors(0, True), line_thickness=3)
 
     # 确保输出目录存在
     if not os.path.exists(save_dir):
