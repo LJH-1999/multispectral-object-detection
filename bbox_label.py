@@ -12,7 +12,7 @@ def load_labels(label_path):
     return labels
 
 # 画倒三角形
-def draw_inverted_triangle(image, center, size=10, color=(0, 0, 255), thickness=2, offset=10):
+def draw_inverted_triangle(image, center, size=10, color=(0, 0, 255), thickness=2, offset=20):
     # Define the points for the inverted triangle
     pts = np.array([
         [center[0], center[1] + offset + size],  # Bottom point
