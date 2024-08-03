@@ -88,9 +88,9 @@ def draw_boxes(image_path, label_path, save_dir, label_map):
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/label.txt
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/label/
 if __name__ == "__main__":
-    image_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/infrared/val/240430.jpg"  # 输入图像路径
+    image_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/visible/val/240430.jpg"  # 输入图像路径
     label_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/label/240430.txt"  # 输入标签路径
-    save_dir = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/ir/"  # 输出目录
+    save_dir = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/rgb/"  # 输出目录
 
     # 标签映射
     label_map = {
