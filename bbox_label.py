@@ -11,6 +11,54 @@ def load_labels(label_path):
     labels = [label.strip().split() for label in labels]
     return labels
 
+# 画倒三角形
+def draw_inverted_triangle(image, center, size=10, color=(0, 0, 255), thickness=2):
+    pts = np.array([
+        [center[0], center[1] - size],
+        [center[0] - size, center[1] + size],
+        [center[0] + size, center[1] + size]
+    ], np.int32)
+    pts = pts.reshape((-1, 1, 2))
+    cv2.polylines(image, [pts], isClosed=True, color=color, thickness=thickness)
+    cv2.fillPoly(image, [pts], color=color)
+
+# 标签映射
+    label_map = {
+        0: 'person',
+        1: 'bicycle',
+        2: 'car'
+        # 添加更多标签根据需要
+    }
+
+# 画框和倒三角的函数
+def draw_box_and_triangle(image_path, label_path, save_dir):
+    image = cv2.imread(image_path)
+    h, w, _ = image.shape
+
+    with open(label_path, 'r') as f:
+        labels = f.readlines()
+
+    for label in labels:
+        cls_id, x_center, y_center, width, height = map(float, label.strip().split())
+        x1 = int((x_center - width / 2) * w)
+        y1 = int((y_center - height / 2) * h)
+        x2 = int((x_center + width / 2) * w)
+        y2 = int((y_center + height / 2) * h)
+
+        cls_id = int(cls_id)
+        label_name = label_map.get(cls_id, 'unknown')
+
+        if cls_id == 9999:  # 需要绘制倒三角形的类别
+            center = (int(x_center * w), int((y_center - height / 2) * h))
+            draw_inverted_triangle(image, center, size=15, color=(0, 0, 255))
+        else:
+            plot_one_box([x1, y1, x2, y2], image, label=label_map[int(cls_id)], color=colors(0, True), line_thickness=3)
+
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    save_path = os.path.join(save_dir, f'out_{os.path.basename(image_path)}')
+    cv2.imwrite(save_path, image)
+    print(f'Saved annotated image to {save_path}')
 
 def draw_boxes(image_path, label_path, save_dir, label_map):
     image = cv2.imread(image_path)
@@ -38,9 +86,10 @@ def draw_boxes(image_path, label_path, save_dir, label_map):
 #标签
 # /home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/visible/val/label.txt
 #/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/label.txt
+#/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/label/
 if __name__ == "__main__":
     image_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/images/infrared/val/240260.jpg"  # 输入图像路径
-    label_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/labels/infrared/val/240260.txt"  # 输入标签路径
+    label_path = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/label/240260.txt"  # 输入标签路径
     save_dir = "/home/watanabelab/multispectural-object-detection/liujiahao/LLVIP_2/printbbox/val/ir/"  # 输出目录
 
     # 标签映射
@@ -51,7 +100,8 @@ if __name__ == "__main__":
         # 添加更多标签根据需要
     }
 
-    draw_boxes(image_path, label_path, save_dir, label_map)
+    #draw_boxes(image_path, label_path, save_dir, label_map)
+    draw_box_and_triangle(image_path, label_path, save_dir)
 
 """"
 # 标签映射表
