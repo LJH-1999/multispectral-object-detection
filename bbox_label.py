@@ -12,12 +12,12 @@ def load_labels(label_path):
     return labels
 
 # 画倒三角形
-def draw_inverted_triangle(image, center, size=10, color=(0, 0, 255), thickness=2, offset=20):
+def draw_inverted_triangle(image, center, size=10, color=(0, 0, 255), thickness=2, offset=10):
     # Define the points for the inverted triangle
     pts = np.array([
-        [center[0], center[1] + offset + size],  # Bottom point
-        [center[0] - size, center[1] + offset - size],  # Left point
-        [center[0] + size, center[1] + offset - size]   # Right point
+        [center[0], center[1] - offset],  # Bottom point (at the top edge of the bounding box)
+        [center[0] - size, center[1] - offset - size],  # Left point
+        [center[0] + size, center[1] - offset - size]   # Right point
     ], np.int32)
     pts = pts.reshape((-1, 1, 2))
     # Draw the triangle
@@ -48,11 +48,9 @@ def draw_box_and_triangle(image_path, label_path, save_dir):
         y2 = int((y_center + height / 2) * h)
 
         cls_id = int(cls_id)
-        label_name = label_map.get(cls_id, 'unknown')
-
+        top_center = ((x1 + x2) // 2, y1)
         if cls_id == 9999:  # 需要绘制倒三角形的类别
-            center = (int(x_center * w), int((y_center - height / 2) * h))
-            draw_inverted_triangle(image, center, size=15, color=(0, 0, 255))
+            draw_inverted_triangle(image, top_center, size=15, color=(0, 0, 255))
         else:
             plot_one_box([x1, y1, x2, y2], image, label=label_map[int(cls_id)], color=colors(0, True), line_thickness=3)
 
