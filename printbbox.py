@@ -47,10 +47,12 @@ for line in lines:
 image_name = os.path.basename(image_path)
 image_name_without_extension, extension = os.path.splitext(image_name)
 
+"""
 # 显示结果
 cv2.imshow('Image with Bounding Boxes', image_with_box)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+"""
 
 # 构造输出图像的文件路径和名称
 output_image_name = f'output_{image_name_without_extension}{extension}'
