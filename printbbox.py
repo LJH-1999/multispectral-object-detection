@@ -52,7 +52,9 @@ output_path = os.path.join('/home/watanabelab/multispectural-object-detection/li
 # 保存带有边界框的图像到指定路径
 cv2.imwrite(output_path, image_with_box)
 
+"""
 # 显示结果（可选）
 cv2.imshow('Image with Bounding Box', image_with_box)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+"""
