@@ -1,0 +1,7 @@
+
+# 项目专用的 SSH key 目录
+.ssh/
+
+# 数据集目录（单数形式）
+dataset/
+LLVIP/
