@@ -5,3 +5,27 @@
 # 数据集目录（单数形式）
 dataset/
 LLVIP/
+
+# PyTorch / 模型文件
+*.pt
+*.pth
+*.ckpt
+*.weights
+*.pkl
+
+# 训练输出目录
+runs/
+wandb/
+checkpoints/
+checkpoint/
+
+# 日志文件
+*.log
+logs/
+tensorboard/
+
+# 训练输出目录（通用模式）
+*transformerx3_llvip_*/
+
+# 所有训练输出目录（包含 transformerx3）
+*transformerx3*
